@@ -14,37 +14,36 @@ public class DemoSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		
+
 		// add users for in memory authentication
 		UserBuilder users = User.withDefaultPasswordEncoder();
 		auth.inMemoryAuthentication()
-		.withUser(users.username("anj").password("test").roles("ADMIN"))
-		.withUser(users.username("anoj").password("test").roles("MANAGER"))
-		.withUser(users.username("asw").password("test").roles("ADMIN"))
-		.withUser(users.username("eab").password("test").roles("EMPLOYEE"));
-		
-		
+				.withUser(users.username("anj").password("test").roles("EMPLOYEE", "MANAGER", "ADMIN"))
+				.withUser(users.username("anoj").password("test").roles("EMPLOYEE", "MANAGER"))
+				.withUser(users.username("asw").password("test").roles("MANAGER", "MANAGER", "ADMIN"))
+				.withUser(users.username("eab").password("test").roles("EMPLOYEE"));
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
+
 		// add login
-		 http.authorizeRequests()
-		 	.anyRequest().authenticated()
-		 	.and()
-		 	.formLogin()
-		 		.loginPage("/showMyFancyLoginPage")
-		 		.loginProcessingUrl("/authenticateTheUser")
-		 		.permitAll()
-		 		
-		 		// add logout 
-	 		.and()
-	 		.logout().permitAll();
-		 		
-		super.configure(http);
+		http.authorizeRequests()
+		
+		/*
+			.anyRequest().authenticated() // need to restrict access based on user role, commenting this 
+			*/
+		
+		// access base on role
+			.antMatchers("/").hasRole("EMPLOYEE")
+			.antMatchers("/leader/**").hasRole("MANAGER")
+			.antMatchers("/admin/**").hasRole("ADMIN")
+			.and()
+			.formLogin().loginPage("/showMyFancyLoginPage")
+				.loginProcessingUrl("/authenticateTheUser").permitAll()
+
+				// add logout
+				.and().logout().permitAll();
 	}
-	
-	
 
 }

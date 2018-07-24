@@ -6,9 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DemoController {
 
-	@GetMapping
+	@GetMapping("/")
 	public String showHome() {
 		return "home";
 	}
+	
+	// add request mapping for leaders
+	@GetMapping("/leader")
+	public String showLeaders() {
+		return "leaders";
+	}
+	
+	// add request mapping for adimins
+		@GetMapping("/admin")
+		public String showAdmins() {
+			return "admins";
+		}
+	
+	
 	
 }
