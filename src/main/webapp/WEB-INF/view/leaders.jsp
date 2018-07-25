@@ -7,5 +7,6 @@
 	<p>Leader meeting details</p>
 	<p>
 	<a href="${pageContext.request.contextPath}/">Home</a>
+	</p>
 </body>
 </html>
